@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:great_places/helpers/db_helper.dart';
 import '../models/place.dart';
+import '../helpers/location_helper.dart';
 
 class GreatPlaces with ChangeNotifier {
   List<Place> _items = [];
@@ -11,15 +12,23 @@ class GreatPlaces with ChangeNotifier {
     return [..._items];
   }
 
-  void addPlace(String pickedTitle, File pickedImage) {
+  Place findById(String id) {
+    return _items.firstWhere((place) => place.id == id);
+  }
+
+  Future<void> addPlace(String pickedTitle, File pickedImage,
+      PlaceLocation pickedlocation) async {
+    final address = await LocationHelper.getPlaceAddress(
+        pickedlocation.latitude, pickedlocation.longitude);
+    final updatedLocation = PlaceLocation(
+        latitude: pickedlocation.latitude,
+        longitude: pickedlocation.longitude,
+        address: address);
     final newPlace = Place(
       id: DateTime.now().toString(),
       title: pickedTitle,
-      location: PlaceLocation(
-          latitude: 0.0,
-          longitude: 0.0,
-          address: null), // Assigning null to the location property
       image: pickedImage,
+      location: updatedLocation,
     );
     _items.add(newPlace);
     notifyListeners();
@@ -27,6 +36,9 @@ class GreatPlaces with ChangeNotifier {
       'id': newPlace.id,
       'title': newPlace.title,
       'image': newPlace.image,
+      'loc_lat': newPlace.location.latitude,
+      'loc_lng': newPlace.location.longitude,
+      'address': newPlace.location.address as String,
     });
   }
 
@@ -36,8 +48,10 @@ class GreatPlaces with ChangeNotifier {
         .map((item) => Place(
             id: item['id'],
             title: item['title'],
-            location:
-                PlaceLocation(latitude: 0.0, longitude: 0.0, address: null),
+            location: PlaceLocation(
+                latitude: item['loc_lat'],
+                longitude: item['loc_lng'],
+                address: item['address']),
             image: File(item['image'])))
         .toList();
     notifyListeners();

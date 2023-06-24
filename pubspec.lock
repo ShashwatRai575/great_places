@@ -134,6 +134,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  flutter_network_image:
+    dependency: "direct main"
+    description:
+      name: flutter_network_image
+      sha256: e557a3d8b314a39484e519c2ae7e9e16a2f4ce187dddb0946217538289c8fe3b
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2+1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -209,7 +217,7 @@ packages:
     source: hosted
     version: "0.15.4"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
